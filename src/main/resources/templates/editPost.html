@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" rel="stylesheet">
+
+    <title th:text="${title}">Title</title>
+</head>
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-12 my-5 d-flex justify-content-center align-items-center">
+            <span class="h1">Edit a Post</span>
+        </div>
+
+        <div class="col-12 my-5">
+            <form method="post" th:action="@{/posts/{id}/update(id=${post.id})}" th:object="${post}">
+                <div class="mb-3">
+                    <label class="form-label" for="title">Title</label>
+                    <input class="form-control" id="title" placeholder="Title..." required
+                           th:field="*{title}" type="text">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="body">Body</label>
+                    <textarea class="form-control" id="body" placeholder="Body..." required
+                              th:field="*{body}"></textarea>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <label class="form-label" for="publishDate">Publish Date</label>
+                        <input class="form-control" id="publishDate" placeholder="yyyyMMdd"
+                               th:field="*{publishDate}" type="text">
+                    </div>
+
+                    <div class="col">
+                        <label class="form-label" for="author">Author</label>
+                        <select class="form-select" id="author" th:field="*{author.id}">
+                            <option value="">-- Select an author --</option>
+                            <option th:each="author:${authors}" th:value="${author.id}"
+                                    th:text="${author.name} + ' ' + ${author.surname}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-success" type="submit">Save</button>
+                <a class="btn btn-secondary" th:href="@{/posts}">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script crossorigin="anonymous" integrity="sha384-..."
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

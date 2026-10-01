@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
+          integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
+          referrerpolicy="no-referrer" rel="stylesheet">
+
+    <title th:text="${title}">Title</title>
+</head>
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-12 my-5 d-flex justify-content-center align-items-center">
+            <span class="h1">Author</span>
+        </div>
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <strong>Id:</strong> <span th:text="${author.id}"></span>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Firstname:</strong> <span th:text="${author.name}"></span>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Lastname:</strong> <span th:text="${author.surname}"></span>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Email:</strong> <span th:text="${author.email}"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="my-3 d-flex gap-2">
+                <a class="btn btn-primary" th:href="@{/authors}">
+                    <i class="fa-solid fa-arrow-left"></i> Back
+                </a>
+                <a class="btn btn-warning" th:href="@{/authors/{id}/edit(id=${author.id})}">
+                    <i class="fa-solid fa-pen"></i> Edit
+                </a>
+                <form method="post" th:action="@{/authors/{id}/delete(id=${author.id})}">
+                    <button class="btn btn-danger" type="submit">
+                        <i class="fa-solid fa-trash"></i> Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script crossorigin="anonymous" integrity="sha384-..."
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

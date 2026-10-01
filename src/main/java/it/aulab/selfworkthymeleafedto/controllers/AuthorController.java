@@ -1,54 +1,66 @@
 package it.aulab.selfworkthymeleafedto.controllers;
 
 import it.aulab.selfworkthymeleafedto.models.Author;
-import it.aulab.selfworkthymeleafedto.models.Post;
-import it.aulab.selfworkthymeleafedto.repositories.AuthorRepository;
+import it.aulab.selfworkthymeleafedto.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-
-@RestController
+@Controller
 @RequestMapping("/authors")
 public class AuthorController {
 
     @Autowired
-    AuthorRepository authorRepository;
+    AuthorService authorService;
 
     @GetMapping
-    public List<Author> getAllAuthors() {
-        return authorRepository.findAll();
+    public String index(Model viewModel) {
+        viewModel.addAttribute("title", "Authors");
+        viewModel.addAttribute("authors", authorService.readAll());
+        return "authors";
     }
 
-    @GetMapping("{id}")
-    public Author getAuthor(@PathVariable("id") Long id) {
-        return authorRepository.findById(id).get();
+    @GetMapping("create")
+    public String createAuthorView(Model viewModel) {
+        viewModel.addAttribute("title", "Create Author");
+        viewModel.addAttribute("author", new Author());
+        return "createAuthor";
     }
 
     @PostMapping
-    public Author createAuthor(@RequestBody Author author) {
-        return authorRepository.save(author);
+    public String createAuthor(@ModelAttribute("author") Author author) {
+        authorService.create(author);
+        return "redirect:/authors";
     }
 
-    @PutMapping("{id}")
-    public Author updateAuthor(@PathVariable("id") Long id, @RequestBody Author author) {
-        author.setId(id);
-        return authorRepository.save(author);
+    @GetMapping("{id}")
+    public String authorDetail(Model viewModel, @PathVariable("id") Long id) {
+        viewModel.addAttribute("title", "Author Detail");
+        viewModel.addAttribute("author", authorService.read(id));
+        return "authorDetail";
     }
 
-    @DeleteMapping("{id}")
-    public void deleteAuthor(@PathVariable("id") Long id) {
-        if (authorRepository.existsById(id)) {
-            Author author = authorRepository.findById(id).get();
-            List<Post> authorPosts = author.getPosts();
-            for (Post post : authorPosts) {
-                post.setAuthor(null);
-            }
-            authorRepository.deleteById(id);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Author not found");
-        }
+    @GetMapping("{id}/edit")
+    public String editAuthorView(Model viewModel, @PathVariable("id") Long id) {
+        viewModel.addAttribute("title", "Edit Author");
+        viewModel.addAttribute("author", authorService.read(id));
+        return "editAuthor";
+    }
+
+    @PostMapping("{id}/update")
+    public String updateAuthor(@PathVariable("id") Long id, @ModelAttribute("author") Author author) {
+        authorService.update(id, author);
+        return "redirect:/authors";
+    }
+
+    @PostMapping("{id}/delete")
+    public String deleteAuthor(@PathVariable("id") Long id) {
+        authorService.delete(id);
+        return "redirect:/authors";
     }
 }

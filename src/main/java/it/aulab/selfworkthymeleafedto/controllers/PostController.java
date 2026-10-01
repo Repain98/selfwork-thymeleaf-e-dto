@@ -1,58 +1,77 @@
 package it.aulab.selfworkthymeleafedto.controllers;
 
-import it.aulab.selfworkthymeleafedto.models.Comment;
 import it.aulab.selfworkthymeleafedto.models.Post;
-import it.aulab.selfworkthymeleafedto.repositories.CommentRepository;
-import it.aulab.selfworkthymeleafedto.repositories.PostRepository;
+import it.aulab.selfworkthymeleafedto.services.AuthorService;
+import it.aulab.selfworkthymeleafedto.services.CommentService;
+import it.aulab.selfworkthymeleafedto.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-
-@RestController
+@Controller
 @RequestMapping("/posts")
 public class PostController {
 
     @Autowired
-    CommentRepository commentRepository;
+    AuthorService authorService;
 
     @Autowired
-    PostRepository postRepository;
+    CommentService commentService;
+
+    @Autowired
+    PostService postService;
 
     @GetMapping
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public String index(Model viewModel) {
+        viewModel.addAttribute("title", "Posts");
+        viewModel.addAttribute("posts", postService.readAll());
+        return "posts";
     }
 
-    @GetMapping("{id}")
-    public Post getPost(@PathVariable("id") Long id) {
-        return postRepository.findById(id).get();
+    @GetMapping("create")
+    public String createPostView(Model viewModel) {
+        viewModel.addAttribute("title", "Create Post");
+        viewModel.addAttribute("post", new Post());
+        viewModel.addAttribute("authors", authorService.readAll());
+        return "createPost";
     }
 
     @PostMapping
-    public Post createPost(@RequestBody Post post) {
-        return postRepository.save(post);
+    public String createPost(@ModelAttribute("post") Post post) {
+        postService.create(post);
+        return "redirect:/posts";
     }
 
-    @PutMapping("{id}")
-    public Post updatePost(@PathVariable("id") Long id, @RequestBody Post post) {
-        post.setId(id);
-        return postRepository.save(post);
+    @GetMapping("{id}")
+    public String postDetail(Model viewModel, @PathVariable("id") Long id) {
+        viewModel.addAttribute("title", "Post Detail");
+        viewModel.addAttribute("post", postService.read(id));
+        viewModel.addAttribute("comments", commentService.readByPost(id));
+        return "postDetail";
     }
 
-    @DeleteMapping("{id}")
-    public void deletePost(@PathVariable("id") Long id) {
-        if (postRepository.existsById(id)) {
-            Post post = postRepository.findById(id).get();
-            List<Comment> postComments = post.getComments();
-            for (Comment comment : postComments) {
-                commentRepository.deleteById(comment.getId());
-            }
-            postRepository.deleteById(id);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found");
-        }
+    @GetMapping("{id}/edit")
+    public String editPostView(Model viewModel, @PathVariable("id") Long id) {
+        viewModel.addAttribute("title", "Edit Post");
+        viewModel.addAttribute("post", postService.read(id));
+        viewModel.addAttribute("authors", authorService.readAll());
+        return "editPost";
+    }
+
+    @PostMapping("{id}/update")
+    public String updatePost(@PathVariable("id") Long id, @ModelAttribute("post") Post post) {
+        postService.update(id, post);
+        return "redirect:/posts";
+    }
+
+    @PostMapping("{id}/delete")
+    public String deletePost(@PathVariable("id") Long id) {
+        postService.delete(id);
+        return "redirect:/posts";
     }
 }

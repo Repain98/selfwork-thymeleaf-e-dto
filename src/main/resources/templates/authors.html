@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
+          integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
+          referrerpolicy="no-referrer" rel="stylesheet">
+
+    <title th:text="${title}">Title</title>
+</head>
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center">Tutti gli autori</h1>
+            <a class="btn btn-primary m-2" th:href="@{/authors/create}">
+                <i class="fa-solid fa-plus"></i>
+            </a>
+
+            <div class="m-2">
+                <a class="btn btn-outline-secondary btn-sm" th:href="@{/posts}">
+                    <i class="fa-solid fa-newspaper"></i> Vai ai post
+                </a>
+                <a class="btn btn-outline-secondary btn-sm" th:href="@{/comments}">
+                    <i class="fa-solid fa-comments"></i> Vai ai commenti
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-striped table-responsive-lg">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Surname</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="author:${authors}">
+                    <td th:text="${author.id}"></td>
+                    <td th:text="${author.name}"></td>
+                    <td th:text="${author.surname}"></td>
+                    <td th:text="${author.email}"></td>
+                    <td>
+                        <a class="btn btn-primary btn-sm"
+                           th:href="@{/authors/{id}(id=${author.id})}">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </a>
+                        <a class="btn btn-warning btn-sm"
+                           th:href="@{/authors/{id}/edit(id=${author.id})}">
+                            <i class="fa-solid fa-pen"></i>
+                        </a>
+                        <form class="d-inline" method="post"
+                              th:action="@{/authors/{id}/delete(id=${author.id})}">
+                            <button class="btn btn-danger btn-sm" type="submit">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script crossorigin="anonymous" integrity="sha384-..."
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

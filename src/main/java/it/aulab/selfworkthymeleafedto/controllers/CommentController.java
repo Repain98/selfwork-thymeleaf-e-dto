@@ -1,48 +1,65 @@
 package it.aulab.selfworkthymeleafedto.controllers;
 
 import it.aulab.selfworkthymeleafedto.models.Comment;
-import it.aulab.selfworkthymeleafedto.repositories.CommentRepository;
+import it.aulab.selfworkthymeleafedto.services.CommentService;
+import it.aulab.selfworkthymeleafedto.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-
-@RestController
+@Controller
 @RequestMapping("/comments")
 public class CommentController {
 
     @Autowired
-    CommentRepository commentRepository;
+    CommentService commentService;
+
+    @Autowired
+    PostService postService;
 
     @GetMapping
-    public List<Comment> getAllComments() {
-        return commentRepository.findAll();
+    public String index(Model viewModel) {
+        viewModel.addAttribute("title", "Comments");
+        viewModel.addAttribute("comments", commentService.readAll());
+        return "comments";
     }
 
-    @GetMapping("{id}")
-    public Comment getComment(@PathVariable("id") Long id) {
-        return commentRepository.findById(id).get();
+    @GetMapping("create")
+    public String createCommentView(Model viewModel) {
+        viewModel.addAttribute("title", "Create Comment");
+        viewModel.addAttribute("comment", new Comment());
+        viewModel.addAttribute("posts", postService.readAll());
+        return "createComment";
     }
 
     @PostMapping
-    public Comment createComment(@RequestBody Comment comment) {
-        return commentRepository.save(comment);
+    public String createComment(@ModelAttribute("comment") Comment comment) {
+        commentService.create(comment);
+        return "redirect:/comments";
     }
 
-    @PutMapping("{id}")
-    public Comment updateComment(@PathVariable("id") Long id, @RequestBody Comment comment) {
-        comment.setId(id);
-        return commentRepository.save(comment);
+    @GetMapping("{id}/edit")
+    public String editCommentView(Model viewModel, @PathVariable("id") Long id) {
+        viewModel.addAttribute("title", "Edit Comment");
+        viewModel.addAttribute("comment", commentService.read(id));
+        viewModel.addAttribute("posts", postService.readAll());
+        return "editComment";
     }
 
-    @DeleteMapping("{id}")
-    public void deleteComment(@PathVariable("id") Long id) {
-        if (commentRepository.existsById(id)) {
-            commentRepository.deleteById(id);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Comment not found");
-        }
+    @PostMapping("{id}/update")
+    public String updateComment(@PathVariable("id") Long id, @ModelAttribute("comment") Comment comment) {
+        commentService.update(id, comment);
+        return "redirect:/comments";
+    }
+
+    @PostMapping("{id}/delete")
+    public String deleteComment(@PathVariable("id") Long id) {
+        commentService.delete(id);
+        return "redirect:/comments";
     }
 }

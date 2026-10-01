@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" rel="stylesheet">
+
+    <title th:text="${title}">Title</title>
+</head>
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-12 my-5 d-flex justify-content-center align-items-center">
+            <span class="h1">Edit a Comment</span>
+        </div>
+
+        <div class="col-12 my-5">
+            <form method="post" th:action="@{/comments/{id}/update(id=${comment.id})}" th:object="${comment}">
+                <div class="mb-3">
+                    <label class="form-label" for="email">Email</label>
+                    <input class="form-control" id="email" placeholder="mario.rossi@example.com" required
+                           th:field="*{email}" type="email">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="body">Body</label>
+                    <textarea class="form-control" id="body" placeholder="Body..." required
+                              th:field="*{body}"></textarea>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <label class="form-label" for="date">Date</label>
+                        <input class="form-control" id="date" placeholder="yyyyMMdd" th:field="*{date}" type="text">
+                    </div>
+
+                    <div class="col">
+                        <label class="form-label" for="post">Post</label>
+                        <select class="form-select" id="post" required th:field="*{post.id}">
+                            <option value="">-- Select a post --</option>
+                            <option th:each="post:${posts}" th:value="${post.id}" th:text="${post.title}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-success" type="submit">Save</button>
+                <a class="btn btn-secondary" th:href="@{/comments}">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script crossorigin="anonymous" integrity="sha384-..."
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" rel="stylesheet">
+
+    <title th:text="${title}">Title</title>
+</head>
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-12 my-5 d-flex justify-content-center align-items-center">
+            <span class="h1">Edit an Author</span>
+        </div>
+
+        <div class="col-12 my-5">
+            <form method="post" th:action="@{/authors/{id}/update(id=${author.id})}" th:object="${author}">
+                <div class="row mb-3">
+                    <div class="col">
+                        <label class="form-label" for="firstname">Firstname</label>
+                        <input class="form-control" id="firstname" placeholder="Firstname..." required
+                               th:field="*{name}" type="text">
+                    </div>
+
+                    <div class="col">
+                        <label class="form-label" for="lastname">Lastname</label>
+                        <input class="form-control" id="lastname" placeholder="Lastname..." required
+                               th:field="*{surname}" type="text">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="email">Email</label>
+                    <input class="form-control" id="email" placeholder="mario.rossi@example.com" required
+                           th:field="*{email}" type="email">
+                </div>
+
+                <button class="btn btn-success" type="submit">Save</button>
+                <a class="btn btn-secondary" th:href="@{/authors}">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script crossorigin="anonymous" integrity="sha384-..."
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
